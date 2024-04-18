@@ -1,0 +1,21 @@
+DELIMITER //
+CREATE FUNCTION calculate_year_difference(input_year INT)
+RETURNS INT
+DETERMINISTIC
+BEGIN
+    DECLARE first_jan_of_year DATE;
+    DECLARE year_difference INT;
+
+    SET first_jan_of_year = MAKEDATE(input_year, 1);
+
+    SET year_difference = TIMESTAMPDIFF(YEAR, first_jan_of_year, CURDATE());
+
+    RETURN year_difference;
+END //
+DELIMITER ;
+
+SELECT
+    year,
+    calculate_year_difference(year) AS year_difference
+FROM
+    infectious_cases_normal

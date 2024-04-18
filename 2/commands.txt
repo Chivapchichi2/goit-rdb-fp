@@ -1,0 +1,55 @@
+CREATE TABLE entity_code (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    entity VARCHAR(100),
+    code CHAR(8),
+    UNIQUE KEY (entity, code)
+);
+
+CREATE TABLE infectious_cases_normal (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    entity_code_id INT,
+    year INT,
+    number_yaws INT,
+    polio_cases INT,
+    cases_guinea_worm INT,
+    number_rabies INT,
+    number_malaria FLOAT,
+    number_hiv FLOAT,
+    number_tuberculosis FLOAT,
+    number_smallpox INT,
+    number_cholera_cases INT,
+    FOREIGN KEY (entity_code_id) REFERENCES entity_code(id)
+);
+
+INSERT INTO entity_code (entity, code)
+SELECT DISTINCT Entity, Code FROM infectious_cases WHERE Entity IS NOT NULL;
+
+INSERT INTO infectious_cases_normal (
+    entity_code_id,
+    year,
+    number_yaws,
+    polio_cases,
+    cases_guinea_worm,
+    number_rabies,
+    number_malaria,
+    number_hiv,
+    number_tuberculosis,
+    number_smallpox,
+    number_cholera_cases
+)
+SELECT
+    ec.id,
+    ic.Year,
+    ic.Number_yaws,
+    ic.polio_cases,
+    ic.cases_guinea_worm,
+    ic.Number_rabies,
+    ic.Number_malaria,
+    ic.Number_hiv,
+    ic.Number_tuberculosis,
+    ic.Number_smallpox,
+    ic.Number_cholera_cases
+FROM infectious_cases ic
+JOIN entity_code ec ON ic.Entity = ec.entity AND ic.Code = ec.code;
+
+
